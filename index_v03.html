@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>F.R.I.E.N.D. v0.3</title>
+<style>
+*{box-sizing:border-box}
+:root{--blue:#0b66ff;--dark:#041022;--panel:#0b234a;--red:#ff2f45;--yellow:#ffd84a;--white:#fff;--cyan:#22d7ff;--green:#25d366}
+body{margin:0;min-height:100vh;background:radial-gradient(circle at top,#123669,#02060d 70%);font-family:Arial,Helvetica,sans-serif;color:white;display:flex;justify-content:center;align-items:center;padding:20px}
+.phone{width:390px;max-width:96vw;background:#121212;border:10px solid #333;border-radius:36px;padding:14px;box-shadow:0 0 42px rgba(34,215,255,.45)}
+.scanner{height:18px;width:145px;margin:0 auto 10px;border-radius:20px;background:#050505;border:1px solid #555;text-align:center;font-size:8px;letter-spacing:1px;color:#aaa;line-height:18px}
+.screen{height:730px;background:linear-gradient(180deg,#061936,#071123);border-radius:22px;overflow:hidden;border:2px solid #174f9d;position:relative}
+.header{padding:12px;background:#071a38;border-bottom:1px solid rgba(255,255,255,.15)}
+.top{display:flex;justify-content:space-between;align-items:center}
+.logo{font-size:22px;font-weight:900;letter-spacing:3px}
+.store{text-align:right;font-size:11px;color:#d8ecff}
+.subtitle{font-size:9px;color:#ffd84a;margin-top:2px}
+select{margin-top:8px;padding:8px;border:1px solid var(--cyan);border-radius:10px;background:#08234d;color:#fff;width:100%;font-size:14px}
+.content{height:600px;overflow-y:auto;padding:12px}
+.card{background:rgba(11,35,74,.92);border:1px solid rgba(34,215,255,.45);border-radius:15px;padding:12px;margin-bottom:12px}
+.card h2,.card h3{margin:0 0 8px}
+.center{text-align:center}
+.scoreCircle{width:160px;height:160px;border-radius:50%;margin:12px auto;border:8px solid var(--cyan);display:flex;align-items:center;justify-content:center;background:radial-gradient(circle,#123d7c,#061323 72%);box-shadow:0 0 28px rgba(34,215,255,.7),inset 0 0 25px rgba(11,102,255,.5)}
+.big{font-size:38px;font-weight:900}.small{font-size:12px;color:#d8ecff}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.metric{background:#0c326b;border:1px solid rgba(255,255,255,.16);border-radius:12px;padding:10px}
+.metric span{font-size:11px;color:#baddff;display:block}.metric strong{font-size:22px}
+.bar{height:8px;background:#08172f;border-radius:20px;margin-top:7px;overflow:hidden}.fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--cyan));border-radius:20px}
+.mission{display:flex;gap:10px;align-items:center;background:#071b3a;border:1px solid rgba(255,255,255,.12);padding:10px;border-radius:12px;margin-top:8px}
+.dot{width:10px;height:42px;border-radius:12px;background:var(--red)}.dot.yellow{background:var(--yellow)}.dot.blue{background:var(--blue)}.dot.white{background:#fff}.dot.green{background:var(--green)}
+.mission b{display:block}.mission small{color:#c8e4ff}
+.nav{position:absolute;bottom:0;left:0;right:0;height:58px;background:#06142b;border-top:1px solid rgba(255,255,255,.15);display:grid;grid-template-columns:repeat(4,1fr)}
+.nav button{background:none;border:none;color:#cce5ff;font-size:11px;font-weight:bold}.nav button.active{color:#ffd84a;border-top:3px solid #ffd84a}
+.actionBtn{width:100%;padding:12px;border:0;border-radius:12px;background:#0b66ff;color:white;font-weight:900;margin-top:10px}
+.badge{display:inline-block;border-radius:999px;padding:4px 8px;font-size:10px;font-weight:bold;margin-left:6px}
+.red{background:var(--red)}.yellow{background:var(--yellow);color:#111}.blue{background:var(--blue)}.white{background:#fff;color:#111}.green{background:var(--green);color:#071}
+ol{padding-left:20px;line-height:1.55}.dept-label{font-size:11px;color:#ffd84a;text-transform:uppercase;letter-spacing:1px}
+</style>
+</head>
+<body>
+<div class="phone"><div class="scanner">ZEBRA TC-52</div><div class="screen">
+<div class="header"><div class="top"><div><div class="logo">F.R.I.E.N.D.</div><div class="subtitle">Full Retail Integration Engaged Network Dynamics</div></div><div class="store">Store #129<br>King Soopers<br>Erie, CO</div></div>
+<select id="departmentSelect" onchange="renderDepartment(this.value)">
+<option value="store">Store Composite</option><option value="deli">Deli</option><option value="meat">Meat</option><option value="seafood">Seafood</option><option value="gm">GM</option><option value="hbc">HBC</option><option value="home">Home</option><option value="receiving">Receiving</option><option value="maintenance">Maintenance</option><option value="starbucks">Starbucks</option><option value="murrays">Murray's Cheese</option><option value="liquor">Liquor</option>
+</select></div>
+<div class="content" id="app"></div>
+<div class="nav"><button id="nav-composite" onclick="setMode('composite')">Composite</button><button id="nav-missions" onclick="setMode('missions')">Missions</button><button id="nav-department" onclick="setMode('department')">Department</button><button id="nav-associate" onclick="setMode('associate')">Associate</button></div>
+</div></div>
+<script>
+let currentMode="composite", currentDepartment="store";
+const departments={
+store:{name:"Store Composite",score:92,priority:"Strategic",color:"blue",mission:"Synchronize Store Execution",impact:"Improve total store execution rhythm",metrics:[["Sales","94"],["Labor","88"],["Safety","98"],["Food Safety","97"],["Training","85"],["Execution","91"]],actions:["Review top 3 store missions","Recognize department wins","Follow up on training gaps","Verify critical compliance tasks"]},
+deli:{name:"Deli",score:88,priority:"Critical",color:"red",mission:"Reduce Deli Shrink",impact:"Projected annual savings: $24,600",metrics:[["Sales","91"],["Shrink","76"],["Production","84"],["Food Safety","98"],["Labor","87"],["Training","83"]],actions:["Complete thaw & sell audit","Review markdown timing","Adjust closing production","Coach rotation and labeling"]},
+meat:{name:"Meat",score:94,priority:"Opportunity",color:"yellow",mission:"Reduce Fresh Shrink",impact:"Protect margin and improve freshness",metrics:[["Sales","96"],["Shrink","84"],["In-stock","93"],["Cutroom","91"],["Safety","97"],["Training","88"]],actions:["Review markdown windows","Verify grind logs","Check high-value inventory","Adjust production to demand"]},
+seafood:{name:"Seafood",score:89,priority:"Critical",color:"red",mission:"Complete Inventory Accuracy Check",impact:"Improve shrink visibility and ordering accuracy",metrics:[["Sales","88"],["Shrink","79"],["Inventory","82"],["Freshness","95"],["Food Safety","99"],["Labor","86"]],actions:["Complete seafood count","Audit high-shrink items","Verify case rotation","Review ordering variance"]},
+gm:{name:"GM",score:90,priority:"Strategic",color:"blue",mission:"Improve Promotional Execution",impact:"Increase display conversion",metrics:[["Sales","92"],["Displays","87"],["Inventory","89"],["Backstock","84"],["Pricing","96"],["Execution","91"]],actions:["Verify ad endcaps","Review missing signs","Clear backstock priority","Check promotional fill"]},
+hbc:{name:"HBC",score:87,priority:"Opportunity",color:"yellow",mission:"Recover Out-of-Stock Opportunities",impact:"Improve availability in high-demand items",metrics:[["Sales","89"],["In-stock","81"],["Backstock","85"],["Pricing","94"],["Planogram","88"],["Shrink","90"]],actions:["Scan top out-of-stocks","Verify backroom inventory","Review high-theft items","Complete facing recovery"]},
+home:{name:"Home",score:86,priority:"Strategic",color:"blue",mission:"Improve Seasonal Presentation",impact:"Strengthen customer experience and basket size",metrics:[["Sales","84"],["Seasonal","82"],["Displays","86"],["Pricing","94"],["Inventory","88"],["Recovery","83"]],actions:["Reset seasonal focal area","Verify signage","Clear damaged product","Refill high-traffic displays"]},
+receiving:{name:"Receiving",score:85,priority:"Critical",color:"red",mission:"Reduce Backroom Congestion",impact:"Improve safety, speed, and inventory flow",metrics:[["Truck","88"],["Backroom","74"],["Accuracy","86"],["Safety","91"],["Staging","78"],["Labor","84"]],actions:["Clear receiving staging area","Prioritize live load completion","Audit inventory discrepancies","Verify safety walk path"]},
+maintenance:{name:"Maintenance",score:91,priority:"Information",color:"white",mission:"Protect Store Readiness",impact:"Prevent small issues from becoming operational drag",metrics:[["Cleanliness","93"],["Restrooms","90"],["Hazards","96"],["Equipment","87"],["Response","89"],["Safety","95"]],actions:["Complete front-end sweep","Check restroom standards","Report equipment issues","Clear spill risk zones"]},
+starbucks:{name:"Starbucks",score:89,priority:"Opportunity",color:"yellow",mission:"Recover Peak Service Flow",impact:"Improve customer wait time and sales",metrics:[["Sales","91"],["Wait Time","82"],["Labor","87"],["Cleanliness","95"],["In-stock","88"],["Training","86"]],actions:["Review peak coverage","Refill top ingredients","Complete cleaning cycle","Coach speed of service"]},
+murrays:{name:"Murray's Cheese",score:90,priority:"Strategic",color:"blue",mission:"Build Specialty Basket Growth",impact:"Increase premium item conversion",metrics:[["Sales","92"],["Shrink","85"],["Sampling","88"],["Presentation","94"],["Inventory","87"],["Training","91"]],actions:["Refresh specialty display","Review aging inventory","Feature top pairing item","Complete sampling plan"]},
+liquor:{name:"Liquor",score:93,priority:"Information",color:"white",mission:"Maintain Compliance and Availability",impact:"Protect compliance while improving sales readiness",metrics:[["Sales","95"],["Compliance","99"],["Inventory","90"],["Shrink","88"],["Displays","91"],["Service","94"]],actions:["Verify compliance signage","Review top-seller inventory","Check locked case recovery","Update promotional display"]}
+};
+function metric(n,v){return `<div class="metric"><span>${n}</span><strong>${v}</strong><div class="bar"><div class="fill" style="width:${v}%"></div></div></div>`}
+function mission(l,t,d,c){return `<div class="mission"><div class="dot ${c}"></div><div><b>${t}</b><small>${l} • ${d}</small></div></div>`}
+function renderDepartment(k){currentDepartment=k;render()}
+function setMode(m){currentMode=m;render()}
+function nav(){document.querySelectorAll(".nav button").forEach(b=>b.classList.remove("active"));document.getElementById("nav-"+currentMode).classList.add("active")}
+function render(){
+const d=departments[currentDepartment];let h="";
+if(currentMode==="composite"){h=`<div class="card center"><div class="dept-label">${d.name}</div><h2>Composite Score</h2><div class="scoreCircle"><div><div class="big">${d.score}</div><div class="small">/ 100</div></div></div><div>${d.name} is being guided by F.R.I.E.N.D. through prioritized missions, operational metrics, and action steps.</div></div><div class="grid">${d.metrics.map(x=>metric(x[0],x[1])).join("")}</div>`}
+if(currentMode==="missions"){h=`<div class="card center"><h2>Guided Mission <span class="badge ${d.color}">${d.priority}</span></h2><div class="scoreCircle"><div><b>${d.mission}</b><br><br>${d.priority}</div></div><div><b>Impact:</b> ${d.impact}</div></div><div class="card"><h3>Mission Actions</h3><ol>${d.actions.map(a=>`<li>${a}</li>`).join("")}</ol><button class="actionBtn" onclick="alert('Mission accepted')">Accept Mission</button></div>`}
+if(currentMode==="department"){h=`<div class="card"><div class="dept-label">${d.name}</div><h2>Department Operating View</h2>${mission(d.priority,d.mission,d.impact,d.color)}</div><div class="grid">${d.metrics.map(x=>metric(x[0],x[1])).join("")}</div>`}
+if(currentMode==="associate"){h=`<div class="card"><div class="dept-label">${d.name}</div><h2>Associate Mission View</h2><div>Simple role-based actions for today's shift.</div></div><div class="card"><h3>Your Missions</h3>${d.actions.slice(0,3).map((a,i)=>mission(i===0?"Now":i===1?"Next":"Follow-up",a,"Touch to complete","blue")).join("")}<button class="actionBtn" onclick="alert('Mission marked complete')">Mark Mission Complete</button></div>`}
+document.getElementById("app").innerHTML=h;nav()
+}
+render();
+</script>
+</body>
+</html>
