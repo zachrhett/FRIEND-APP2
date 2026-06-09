@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>F.R.I.E.N.D. Retail Command Center</title>
+
+<style>
+
+:root{
+  --blue:#0077ff;
+  --red:#ff2f2f;
+  --yellow:#ffd83d;
+  --green:#38e27d;
+  --dark:#0a0f1e;
+  --panel:#172237;
+  --text:#eef5ff;
+}
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:Arial,Helvetica,sans-serif;
+}
+
+body{
+  background:var(--dark);
+  color:var(--text);
+}
+
+header{
+  padding:20px;
+  text-align:center;
+  border-bottom:2px solid var(--blue);
+}
+
+header h1{
+  color:var(--blue);
+}
+
+.dashboard{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:20px;
+  padding:20px;
+}
+
+.panel{
+  background:var(--panel);
+  border-radius:16px;
+  padding:20px;
+  border:1px solid rgba(255,255,255,.1);
+}
+
+.panel h2{
+  margin-bottom:15px;
+  color:var(--blue);
+}
+
+.scoreRing{
+  width:220px;
+  height:220px;
+  border-radius:50%;
+  border:12px solid var(--red);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin:auto;
+  font-size:48px;
+  font-weight:bold;
+}
+
+.priority{
+  text-align:center;
+  margin-top:15px;
+  font-size:24px;
+  color:var(--red);
+}
+
+.metric{
+  margin-bottom:15px;
+}
+
+.metricLabel{
+  display:flex;
+  justify-content:space-between;
+  margin-bottom:4px;
+}
+
+.bar{
+  height:12px;
+  background:#111;
+  border-radius:10px;
+  overflow:hidden;
+}
+
+.fill{
+  height:100%;
+  background:var(--blue);
+}
+
+.mission{
+  padding:12px;
+  border-left:5px solid var(--red);
+  background:#101827;
+  margin-bottom:12px;
+  border-radius:8px;
+}
+
+.trainingItem{
+  padding:12px;
+  margin-bottom:10px;
+  background:#101827;
+  border-radius:8px;
+}
+
+.departments{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:10px;
+}
+
+.department{
+  background:#101827;
+  border:1px solid rgba(255,255,255,.1);
+  padding:15px;
+  text-align:center;
+  border-radius:10px;
+  cursor:pointer;
+}
+
+.department:hover{
+  border-color:var(--blue);
+}
+
+@media(max-width:900px){
+
+.dashboard{
+  grid-template-columns:1fr;
+}
+
+.departments{
+  grid-template-columns:repeat(2,1fr);
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>F.R.I.E.N.D.</h1>
+  <p>Full Retail Integration Engaged Network Dynamics</p>
+  <p>Store #129 • Store Leader Command Center</p>
+</header>
+
+<div class="dashboard">
+
+<div class="panel">
+  <h2>Store Composite</h2>
+
+  <div class="scoreRing">
+    84
+  </div>
+
+  <div class="priority">
+    PRIORITY LEVEL: RED
+  </div>
+
+  <br>
+
+  <h2>Guided Mission</h2>
+
+  <div class="mission">
+    Stabilize Total Store Execution
+  </div>
+</div>
+
+<div class="panel">
+  <h2>Store Metrics</h2>
+
+  <div id="metrics"></div>
+</div>
+
+<div class="panel">
+  <h2>Priority Missions</h2>
+
+  <div id="missions"></div>
+</div>
+
+<div class="panel">
+  <h2>Fresh Start & Training</h2>
+
+  <div id="training"></div>
+</div>
+
+<div class="panel" style="grid-column:1/-1;">
+  <h2>Departments</h2>
+
+  <div class="departments">
+
+    <div class="department">Front End</div>
+    <div class="department">E-Commerce</div>
+    <div class="department">Produce</div>
+    <div class="department">Bakery</div>
+    <div class="department">Deli</div>
+    <div class="department">Meat</div>
+    <div class="department">Seafood</div>
+    <div class="department">GM</div>
+    <div class="department">HBC</div>
+    <div class="department">Homeside</div>
+    <div class="department">Receiving</div>
+    <div class="department">Maintenance</div>
+    <div class="department">Starbucks</div>
+    <div class="department">Murray's Cheese</div>
+    <div class="department">Liquor</div>
+
+  </div>
+</div>
+
+</div>
+
+<script>
+
+const metrics = [
+  ["Total Store Sales",83],
+  ["Labor Alignment",78],
+  ["Fresh Shrink",72],
+  ["Customer Experience",86],
+  ["Food Safety",98],
+  ["Associate Training",80]
+];
+
+const missions = [
+  "RED | Total Store Priority Walk",
+  "RED | Fresh Shrink Intervention",
+  "YELLOW | Labor Rebalance",
+  "GREEN | Leadership Recognition"
+];
+
+const training = [
+  "Store Leader Composite Interpretation",
+  "Fresh Start Coaching",
+  "Retail Operations Training",
+  "AI Opportunity Interpretation"
+];
+
+const metricsDiv = document.getElementById("metrics");
+
+metrics.forEach(item=>{
+
+metricsDiv.innerHTML += `
+<div class="metric">
+  <div class="metricLabel">
+    <span>${item[0]}</span>
+    <span>${item[1]}%</span>
+  </div>
+  <div class="bar">
+    <div class="fill" style="width:${item[1]}%"></div>
+  </div>
+</div>
+`;
+
+});
+
+const missionDiv = document.getElementById("missions");
+
+missions.forEach(item=>{
+
+missionDiv.innerHTML += `
+<div class="mission">${item}</div>
+`;
+
+});
+
+const trainingDiv = document.getElementById("training");
+
+training.forEach(item=>{
+
+trainingDiv.innerHTML += `
+<div class="trainingItem">${item}</div>
+`;
+
+});
+
+</script>
+
+</body>
+</html>
